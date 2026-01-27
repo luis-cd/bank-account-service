@@ -37,4 +37,12 @@ Run with:
 ./mvnw spring-boot:run
 
 Swagger UI: http://localhost:8080/swagger-ui.html
-H2 Console: http://localhost:8080/h2-console
+H2 Console: http://localhost:8080/h2-console---
+
+---
+
+## Consideraciones técnicas
+
+Para entender las decisiones de diseño, trade-offs y algunas discusiones sobre seguridad, escalabilidad y arquitectura, consulta el archivo:
+
+[Consideraciones técnicas](ConsideracionesTecnicas.md)

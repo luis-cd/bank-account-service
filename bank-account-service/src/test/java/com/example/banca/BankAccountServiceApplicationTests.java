@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BankAccountServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void applicationContextStarts() {
+		// Vacio por ahora, servirá para probar que Spring funciona
+    }
 }
