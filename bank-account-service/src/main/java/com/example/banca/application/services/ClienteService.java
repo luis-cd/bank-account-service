@@ -3,7 +3,10 @@ package com.example.banca.application.services;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.stereotype.Service;
+
 import com.example.banca.domain.model.Cliente;
+import com.example.banca.domain.model.Exceptions.ClienteNoEncontradoException;
 import com.example.banca.domain.model.ValueObjects.Dni;
 import com.example.banca.domain.ports.in.ObtenerClientePorDniUseCase;
 import com.example.banca.domain.ports.in.ObtenerClientesConCuentaSuperiorAUseCase;
@@ -11,6 +14,7 @@ import com.example.banca.domain.ports.in.ObtenerClientesMayoresDeEdadUseCase;
 import com.example.banca.domain.ports.in.ObtenerClientesUseCase;
 import com.example.banca.domain.ports.out.ClienteRepositoryPort;
 
+@Service
 public class ClienteService implements
         ObtenerClientesUseCase,
         ObtenerClientesMayoresDeEdadUseCase,
@@ -57,9 +61,7 @@ public class ClienteService implements
 
         return clienteRepository.findByDni(dniVO)
             .orElseThrow(() ->
-                new IllegalStateException(
-                    "No existe cliente con DNI " + dniVO.getValor()
-                )
+                new ClienteNoEncontradoException(dniVO.getValor())
             );
     }
 }

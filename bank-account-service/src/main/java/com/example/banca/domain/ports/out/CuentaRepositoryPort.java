@@ -11,5 +11,5 @@ public interface CuentaRepositoryPort {
     List<CuentaBancaria> findByDni(Dni dni);
     CuentaBancaria save(CuentaBancaria cuenta);
 
-    void actualizarSaldo(Long id, double nuevoTotal);
+    boolean actualizarSaldo(Long id, double nuevoTotal);
 }

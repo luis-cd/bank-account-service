@@ -67,10 +67,9 @@ class CuentaServiceTest {
     @Test
     void actualizarSaldoExistente() {
         Long idCuenta = 1L;
-        CuentaBancaria cuenta =
-                new CuentaBancaria(idCuenta, 2000.0, Dni.of("11111111A"), TipoCuenta.NORMAL);
 
-        when(cuentaRepo.findById(idCuenta)).thenReturn(Optional.of(cuenta));
+        when(cuentaRepo.actualizarSaldo(idCuenta, 3000.0))
+                .thenReturn(true);
 
         cuentaService.actualizarSaldo(idCuenta, 3000.0);
 
@@ -78,6 +77,7 @@ class CuentaServiceTest {
                 .actualizarSaldo(idCuenta, 3000.0);
 
         verify(cuentaRepo, never()).save(any());
+        verify(cuentaRepo, never()).findById(any());
     }
 
     @Test

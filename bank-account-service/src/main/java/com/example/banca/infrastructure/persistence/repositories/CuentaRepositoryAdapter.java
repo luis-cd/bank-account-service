@@ -3,13 +3,14 @@ package com.example.banca.infrastructure.persistence.repositories;
 import com.example.banca.domain.model.CuentaBancaria;
 import com.example.banca.domain.model.ValueObjects.Dni;
 import com.example.banca.domain.ports.out.CuentaRepositoryPort;
+import com.example.banca.infrastructure.persistence.jpaentities.ClienteEntity;
 import com.example.banca.infrastructure.persistence.jpaentities.CuentaBancariaEntity;
 import com.example.banca.infrastructure.persistence.mappers.CuentaBancariaMapper;
 import com.example.banca.infrastructure.persistence.repositories.CuentaBancariaRepository;
+import com.example.banca.infrastructure.persistence.repositories.ClienteRepository;
+import com.example.banca.domain.model.Exceptions.ClienteNoEncontradoException;
 
 import lombok.RequiredArgsConstructor;
-import com.example.banca.infrastructure.persistence.repositories.ClienteRepository;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,15 +43,15 @@ public class CuentaRepositoryAdapter implements CuentaRepositoryPort {
     @Override
     @Transactional
     public CuentaBancaria save(CuentaBancaria cuenta) {
-        var clienteEntity = clienteRepository.findById(cuenta.getDniCliente().getValor())
-                .orElseThrow(() -> new IllegalStateException(
-                        "No se puede guardar cuenta, cliente no existe: " + cuenta.getDniCliente().getValor()
-                ));
+        // Verificar que exista el cliente
+        ClienteEntity clienteEntity = clienteRepository.findById(cuenta.getDniCliente().getValor())
+            .orElseThrow(() -> new ClienteNoEncontradoException(cuenta.getDniCliente().getValor()));
 
-        var cuentaEntity = CuentaBancariaMapper.toEntity(cuenta, clienteEntity);
+        // Mapear y persistir la cuenta
+        CuentaBancariaEntity cuentaEntity = CuentaBancariaMapper.toEntity(cuenta, clienteEntity);
 
+        // Asociar la cuenta al cliente
         clienteEntity.addCuenta(cuentaEntity);
-
         clienteRepository.save(clienteEntity);
 
         return CuentaBancariaMapper.toDomain(cuentaEntity);
@@ -58,7 +59,8 @@ public class CuentaRepositoryAdapter implements CuentaRepositoryPort {
 
     @Override
     @Transactional
-    public void actualizarSaldo(Long id, double nuevoTotal) {
-        cuentaBancariaRepository.actualizarTotal(id, nuevoTotal);
+    public boolean actualizarSaldo(Long id, double nuevoTotal) {
+        int filasActualizadas = cuentaBancariaRepository.actualizarTotal(id, nuevoTotal);
+        return filasActualizadas > 0;
     }
 }

@@ -8,9 +8,12 @@ import com.example.banca.domain.ports.out.CuentaRepositoryPort;
 import com.example.banca.domain.ports.out.ClienteRepositoryPort;
 import com.example.banca.domain.ports.in.CrearCuentaUseCase;
 import com.example.banca.domain.ports.in.ActualizarSaldoUseCase;
+import com.example.banca.domain.model.Exceptions.CuentaNoEncontradaException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class CuentaService implements CrearCuentaUseCase, ActualizarSaldoUseCase {
 
@@ -23,22 +26,27 @@ public class CuentaService implements CrearCuentaUseCase, ActualizarSaldoUseCase
         Cliente cliente = clienteRepository.findByDni(dniCliente)
             .orElseGet(() -> Cliente.crearParcial(dniCliente));
 
+        // Crear la cuenta y agregar al cliente
         CuentaBancaria cuenta = new CuentaBancaria(null, total, dniCliente, tipoCuenta);
         cliente.agregarCuenta(cuenta);
 
+        // Guardar cliente junto con la nueva cuenta
         Cliente clienteGuardado = clienteRepository.save(cliente);
-    
+
+        // Devolver la cuenta recién persistida
         return clienteGuardado.getCuentas()
             .stream()
-            .filter(c -> c.getTipoCuenta().equals(tipoCuenta)
-                    && c.getTotal() == total)
+            .filter(c -> c.getTipoCuenta().equals(tipoCuenta) && c.getTotal() == total)
             .findFirst()
             .orElseThrow(() -> new IllegalStateException("No se pudo persistir la cuenta"));
     }
 
     @Override
     public void actualizarSaldo(Long idCuenta, double nuevoTotal) {
-        // Llamamos directamente al adapter que ejecuta UPDATE en la DB
-        cuentaRepository.actualizarSaldo(idCuenta, nuevoTotal);
+        boolean actualizado = cuentaRepository.actualizarSaldo(idCuenta, nuevoTotal);
+
+        if (!actualizado) {
+            throw new CuentaNoEncontradaException(idCuenta);
+        }
     }
 }

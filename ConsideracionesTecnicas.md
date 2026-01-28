@@ -125,3 +125,36 @@ Se decidió usar **`data.sql`** para poblar la base de datos inicial en lugar de
 **Alternativa**: poblar datos con `CommandLineRunner` o `ApplicationRunner` usando repositorios JPA. Esto es más dinámico pero menos predecible para pruebas reproducibles y depende de la lógica de negocio para crear entidades.
 
 ---
+
+## Seguridad y control de acceso (pendiente de implementar)
+
+### Protección de endpoints (JWT / OAuth2)
+
+Actualmente, la aplicación **no implementa ningún mecanismo de autenticación ni autorización**, por lo que **todos los endpoints REST serían accesibles por cualquier actor que conociese los paths** si el sistema se desplegase en un entorno productivo.
+
+En un sistema real, sería imprescindible añadir una capa de seguridad basada en estándares como:
+
+- **JWT (JSON Web Tokens)** para autenticación stateless.
+- **OAuth2 / OpenID Connect** para delegación de identidad y control de acceso.
+- **Roles y scopes** para restringir operaciones sensibles (por ejemplo, creación de cuentas o actualización de saldos).
+
+Esto permitiría:
+- Asegurar que solo usuarios autenticados acceden a la API.
+- Diferenciar permisos entre perfiles (usuario, administrador, operador, etc.).
+- Evitar accesos no autorizados incluso si los endpoints son conocidos.
+
+La seguridad no se ha implementado en este proyecto porque **excede el alcance de la prueba técnica**, que se centra en diseño de dominio, arquitectura hexagonal y testing. No obstante, la arquitectura actual es compatible con una futura integración de Spring Security sin cambios estructurales relevantes.
+
+---
+
+### Gestión de credenciales y configuración sensible
+
+Actualmente, las credenciales de base de datos y otras configuraciones sensibles se encuentran en `application.properties`.
+
+En un entorno productivo, esto **no es una práctica segura**. Lo recomendable sería:
+
+- Externalizar secretos mediante **variables de entorno** (`.env`).
+- Usar un **secret manager** (Vault, AWS Secrets Manager, Azure Key Vault, etc.).
+- Evitar que contraseñas o tokens se versionen en el repositorio.
+
+De nuevo, esta simplificación se ha aceptado únicamente para facilitar la ejecución local y la evaluación de la prueba técnica.
