@@ -35,16 +35,16 @@ public class ClienteEntity {
     @Column(name = "dni", nullable = false, unique = true)
     private String dni;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", nullable = true)
     private String nombre;
 
-    @Column(name = "apellido1", nullable = false)
+    @Column(name = "apellido1", nullable = true)
     private String apellido1;
 
     @Column(name = "apellido2")
     private String apellido2;
 
-    @Column(name = "fecha_nacimiento", nullable = false)
+    @Column(name = "fecha_nacimiento", nullable = true)
     private LocalDate fechaNacimiento;
 
     // Relación con cuentas

@@ -18,42 +18,64 @@ public class Cliente {
     private final LocalDate fechaNacimiento;
     private final List<CuentaBancaria> cuentas;
 
-    public Cliente(
-            Dni dni,
-            String nombre,
-            String apellido1,
-            String apellido2,
-            LocalDate fechaNacimiento,
-            List<CuentaBancaria> cuentas
-    ) {
-        this.dni = Objects.requireNonNull(dni, "dni no puede ser null");
-        this.nombre = Objects.requireNonNull(nombre, "nombre no puede ser null");
-        this.apellido1 = Objects.requireNonNull(apellido1, "apellido1 no puede ser null");
-        this.apellido2 = apellido2; // opcionalmente el apellido2 puede ser null, aunque esto es una decisión de negocio
-        this.fechaNacimiento = Objects.requireNonNull(fechaNacimiento, "fechaNacimiento no puede ser null");
-        this.cuentas = cuentas == null ? List.of() : List.copyOf(cuentas);
-    }
-
-    public static Cliente crear(
-        String dni,
+    private Cliente(
+        Dni dni,
         String nombre,
         String apellido1,
         String apellido2,
-        LocalDate fechaNacimiento
+        LocalDate fechaNacimiento,
+        List<CuentaBancaria> cuentas
     ) {
+        this.dni = Objects.requireNonNull(dni, "dni no puede ser null");
+        this.nombre = nombre;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
+        this.fechaNacimiento = fechaNacimiento;
+        this.cuentas = cuentas == null ? List.of() : List.copyOf(cuentas);
+    }
+
+    /** Cliente creado automáticamente al dar de alta una cuenta */
+    public static Cliente crearParcial(Dni dni) {
         return new Cliente(
-            Dni.of(dni),
-            nombre,
-            apellido1,
-            apellido2,
-            fechaNacimiento,
+            dni,
+            null,
+            null,
+            null,
+            null,
             List.of()
         );
     }
 
+    /** Cliente con datos completos */
+    public static Cliente crearCompleto(
+        Dni dni,
+        String nombre,
+        String apellido1,
+        String apellido2,
+        LocalDate fechaNacimiento,
+        List<CuentaBancaria> cuentas
+    ) {
+        Objects.requireNonNull(nombre, "nombre no puede ser null");
+        Objects.requireNonNull(apellido1, "apellido1 no puede ser null");
+        Objects.requireNonNull(fechaNacimiento, "fechaNacimiento no puede ser null");
+
+        return new Cliente(
+            dni,
+            nombre,
+            apellido1,
+            apellido2,
+            fechaNacimiento,
+            cuentas
+        );
+    }
+
+    public boolean estaCompleto() {
+        return nombre != null && apellido1 != null && fechaNacimiento != null;
+    }
+
     public boolean esMayorDeEdad() {
-        // Nota: en sistemas internacionales la mayoría de edad puede variar
-        return Period.between(fechaNacimiento, LocalDate.now()).getYears() >= 18;
+        return estaCompleto() &&
+            Period.between(fechaNacimiento, LocalDate.now()).getYears() >= 18;
     }
 
     public double getTotalDineroEnCuentas() {

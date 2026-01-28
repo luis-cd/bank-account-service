@@ -18,7 +18,7 @@ class ClienteMapperTest {
     private ClienteRepository clienteRepository;
 
     @Test
-    void shouldMapEntityToDomain() {
+    void mapearEntityToDomain() {
         ClienteEntity entity = clienteRepository
             .findById("11111111A")
             .orElseThrow();
@@ -30,7 +30,7 @@ class ClienteMapperTest {
     }
 
     @Test
-    void shouldMapDomainToEntity() {
+    void mapearDomainToEntity() {
         ClienteEntity entity = clienteRepository
             .findById("11111111A")
             .orElseThrow();
@@ -41,5 +41,22 @@ class ClienteMapperTest {
 
         assertThat(newEntity.getDni()).isEqualTo("11111111A");
         assertThat(newEntity.getCuentas()).hasSize(2);
+    }
+
+    @Test
+    void mapearClienteSinCompletar() {
+        // Estos se dan cuando se crea cuenta sin cliente pre-existente
+        ClienteEntity partialEntity = ClienteEntity.builder()
+            .dni("66666666F")
+            .build(); // sin nombre, apellido1 ni fecha
+
+        Cliente partialDomain = ClienteMapper.toDomain(partialEntity);
+
+        assertThat(partialDomain.getDni().getValor()).isEqualTo("66666666F");
+        assertThat(partialDomain.estaCompleto()).isFalse();
+
+        ClienteEntity mappedBack = ClienteMapper.toEntity(partialDomain);
+        assertThat(mappedBack.getDni()).isEqualTo("66666666F");
+        assertThat(mappedBack.getNombre()).isNull();
     }
 }

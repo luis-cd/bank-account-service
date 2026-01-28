@@ -53,7 +53,7 @@ class CuentaBancariaRepositoryTest {
 
 	// Esto repite un poco lo que se testea en la capa de application
 	@Test
-	void testCrearCuentaSoloSiClienteExiste() {
+	void testCrearCuentaClienteExiste() {
 		ClienteEntity clienteExistente = ClienteEntity.builder()
 				.dni("77777777B")
 				.nombre("Cuenta3")
@@ -78,18 +78,15 @@ class CuentaBancariaRepositoryTest {
 	}
 
 	@Test
-	void testCrearCuentaConDniClienteNoExistente() {
+	void testCrearCuentaConClienteParcial() {
 		String dni = "88888888B";
 
 		// Asegurarse de que no existe
 		assertThat(clienteRepository.findById(dni)).isEmpty();
 
-		// Crear cliente y asociarle la cuenta
+		// Crear cliente parcial (solo DNI)
 		ClienteEntity nuevoCliente = ClienteEntity.builder()
 				.dni(dni)
-				.nombre("Nuevo")
-				.apellido1("Cliente")
-				.fechaNacimiento(LocalDate.of(1990, 1, 1))
 				.build();
 
 		CuentaBancariaEntity nuevaCuenta = CuentaBancariaEntity.builder()
@@ -97,18 +94,21 @@ class CuentaBancariaRepositoryTest {
 				.total(5000.0)
 				.build();
 
-		// Asociar la cuenta al cliente usando addCuenta para mantener relación bidireccional
+		// Asociar cuenta
 		nuevoCliente.addCuenta(nuevaCuenta);
 
-		// Guardar el cliente (cascade guarda también la cuenta)
+		// Guardar cliente (cascade guarda la cuenta)
 		clienteRepository.save(nuevoCliente);
 
-		// Comprobar que cliente y cuenta existen
+		// Verificar
 		var clienteGuardado = clienteRepository.findById(dni).orElseThrow();
 		var cuentas = cuentaRepository.findByClienteDni(dni);
 
 		assertThat(clienteGuardado.getCuentas()).hasSize(1);
 		assertThat(cuentas).hasSize(1);
 		assertThat(cuentas.get(0).getTotal()).isEqualTo(5000.0);
+		assertThat(clienteGuardado.getNombre()).isNull();
+		assertThat(clienteGuardado.getApellido1()).isNull();
+		assertThat(clienteGuardado.getFechaNacimiento()).isNull();
 	}
 }

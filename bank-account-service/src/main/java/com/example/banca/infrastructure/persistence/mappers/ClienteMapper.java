@@ -20,14 +20,22 @@ public final class ClienteMapper {
             .map(CuentaBancariaMapper::toDomain)
             .collect(Collectors.toList());
 
-        return new Cliente(
-            Dni.of(entity.getDni()),
-            entity.getNombre(),
-            entity.getApellido1(),
-            entity.getApellido2(),
-            entity.getFechaNacimiento(),
-            cuentas
-        );
+        boolean esCompleto = entity.getNombre() != null &&
+                             entity.getApellido1() != null &&
+                             entity.getFechaNacimiento() != null;
+
+        if (esCompleto) {
+            return Cliente.crearCompleto(
+                Dni.of(entity.getDni()),
+                entity.getNombre(),
+                entity.getApellido1(),
+                entity.getApellido2(),
+                entity.getFechaNacimiento(),
+                cuentas
+            );
+        } else {
+            return Cliente.crearParcial(Dni.of(entity.getDni()));
+        }
     }
 
     // Domain -> Entity

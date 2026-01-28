@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS clientes (
     dni VARCHAR(9) PRIMARY KEY,
-    nombre VARCHAR(64) NOT NULL,
-    apellido1 VARCHAR(64) NOT NULL,
+    nombre VARCHAR(64),
+    apellido1 VARCHAR(64),
     apellido2 VARCHAR(64),
-    fecha_nacimiento DATE NOT NULL
+    fecha_nacimiento DATE
 );
 
 CREATE TABLE IF NOT EXISTS cuentas_bancarias (

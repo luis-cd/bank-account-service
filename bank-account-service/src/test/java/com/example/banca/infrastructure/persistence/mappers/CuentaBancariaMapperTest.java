@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CuentaBancariaMapperTest {
 
 	@Test
-	void shouldMapEntityToDomain() {
+	void mapearEntityToDomain() {
 		ClienteEntity clienteEntity = ClienteEntity.builder()
 			.dni("11111111A")
 			.nombre("Juan")
@@ -37,7 +37,7 @@ class CuentaBancariaMapperTest {
 	}
 
 	@Test
-	void shouldMapDomainToEntity() {
+	void mapearDomainToEntity() {
 		ClienteEntity clienteEntity = ClienteEntity.builder()
 			.dni("22222222B")
 			.nombre("Ana")

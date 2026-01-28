@@ -90,4 +90,35 @@ public class ClienteRepositoryTest {
 		List<ClienteEntity> result = clienteRepository.findByFechaNacimientoBefore(LocalDate.of(2010,1,1));
 		assertThat(result).extracting("dni").contains("66666666X");
 	}
+
+	@Test
+	void testGuardarYRecuperarClienteParcial() {
+		// Cliente parcial: solo DNI
+		ClienteEntity clienteParcial = ClienteEntity.builder()
+			.dni("88888888P")
+			.build(); // nombre, apellidos, fechaNacimiento null
+
+		clienteRepository.save(clienteParcial);
+
+		ClienteEntity saved = clienteRepository.findById("88888888P").orElseThrow();
+
+		// Verificamos que se guardó y los campos opcionales son null
+		assertThat(saved.getDni()).isEqualTo("88888888P");
+		assertThat(saved.getNombre()).isNull();
+		assertThat(saved.getApellido1()).isNull();
+		assertThat(saved.getFechaNacimiento()).isNull();
+
+		// Agregamos cuentas después
+		CuentaBancariaEntity cuenta = CuentaBancariaEntity.builder()
+			.tipoCuenta("NORMAL")
+			.total(5000.0)
+			.build();
+
+		saved.addCuenta(cuenta);
+		clienteRepository.save(saved);
+
+		ClienteEntity withCuenta = clienteRepository.findById("88888888P").orElseThrow();
+		assertThat(withCuenta.getCuentas()).hasSize(1);
+		assertThat(withCuenta.getCuentas().get(0).getCliente()).isSameAs(withCuenta);
+	}
 }

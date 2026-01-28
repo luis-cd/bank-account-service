@@ -13,12 +13,13 @@ class ClienteTest {
 
     @Test
     void deberiaDetectarClienteMayorDeEdad() {
-        Cliente cliente = Cliente.crear(
-            "11111111A",
+        Cliente cliente = Cliente.crearCompleto(
+            Dni.of("11111111A"),
             "Juan",
             "Pérez",
             null,
-            LocalDate.now().minusYears(30)
+            LocalDate.now().minusYears(30),
+            List.of() // sin cuentas
         );
 
         assertTrue(cliente.esMayorDeEdad());
@@ -29,7 +30,7 @@ class ClienteTest {
         CuentaBancaria c1 = CuentaBancaria.crear(1000, "11111111A", "NORMAL");
         CuentaBancaria c2 = CuentaBancaria.crear(500, "11111111A", "PREMIUM");
 
-        Cliente cliente = new Cliente(
+        Cliente cliente = Cliente.crearCompleto(
             Dni.of("11111111A"),
             "Juan",
             "Pérez",
