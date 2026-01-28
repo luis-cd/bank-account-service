@@ -51,7 +51,35 @@ Actualmente `CuentaBancaria.total` se implementa como `double`. En sistemas real
 
 ---
 
-## 2. Infraestructura (Infrastructure)
+## 2. Aplicación (Application)
+
+### Separación de lógica de creación de Cliente: completo vs parcial
+
+En el dominio, la clase [`Cliente`](bank-account-service/src/main/java/com/example/banca/domain/model/Cliente.java) distingue entre:
+
+1. **Cliente completo**: creado con toda la información disponible (`nombre`, `apellido1`, `apellido2`, `fechaNacimiento`) mediante `Cliente.crearCompleto(...)`.  
+2. **Cliente parcial**: creado solo con el DNI mediante `Cliente.crearParcial(...)` cuando se quiere persistir una cuenta para un cliente que aún no existía en la base de datos.  
+
+**Motivo de la separación**:
+
+- Permite que la aplicación maneje **dos escenarios distintos de persistencia**:
+  - Clientes ya registrados: conservan toda su información.
+  - Clientes “nuevos” en el momento de crear una cuenta: se crea un registro parcial para no bloquear la operación.  
+- Evita `null pointer exceptions` al manejar atributos opcionales y garantiza que la lista de cuentas siempre se inicialice, incluso para clientes parciales.  
+- Facilita la **persistencia con JPA**: los clientes parciales se pueden guardar automáticamente junto con sus cuentas sin necesidad de completar los datos inmediatamente.
+
+**Beneficio**: esta distinción mantiene **la integridad del dominio** y permite que la aplicación maneje correctamente la creación de cuentas para clientes existentes o nuevos, sin romper las reglas de negocio.
+
+---
+
+### Separación de UseCases en interfaces de Domain Ports
+
+Los casos de uso (`CrearCuentaUseCase`, `ActualizarSaldoUseCase`, etc.) están definidos como **interfaces separadas en `domain/ports/in`** aunque actualmente sean pocas líneas de código.
+El motivo de separarlos en distintos archivos no es más que por claridad, en previsión de un ficticio futuro, en el que el proyecto creciese y la lógica de estos contratos se hiciese más compleja.
+
+---
+
+## 3. Infraestructura (Infrastructure)
 
 ### Problema N+1 y cómo lo solucionamos
 
@@ -82,6 +110,7 @@ Para preparar el sistema a un mayor volumen de datos, se pueden añadir posterio
 - **Query por criterios**: limitar las búsquedas y agregaciones según filtros específicos (`fechaNacimientoBefore`, `total > X`).
 
 Estas técnicas ayudan a **evitar sobrecarga de memoria y consultas costosas** al trabajar con bases de datos grandes.
+A mayores, y como es evidente, no usar una base de datos en memoria es siempre una buena opción.
 
 ---
 
@@ -94,3 +123,5 @@ Se decidió usar **`data.sql`** para poblar la base de datos inicial en lugar de
 - Facilita la **repetibilidad de tests y demos**, asegurando que todos los desarrolladores trabajen con los mismos datos iniciales.  
 
 **Alternativa**: poblar datos con `CommandLineRunner` o `ApplicationRunner` usando repositorios JPA. Esto es más dinámico pero menos predecible para pruebas reproducibles y depende de la lógica de negocio para crear entidades.
+
+---

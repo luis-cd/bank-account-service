@@ -34,7 +34,9 @@ public final class ClienteMapper {
                 cuentas
             );
         } else {
-            return Cliente.crearParcial(Dni.of(entity.getDni()));
+            Cliente clienteParcial = Cliente.crearParcial(Dni.of(entity.getDni()));
+            cuentas.forEach(clienteParcial::agregarCuenta);
+            return clienteParcial;
         }
     }
 

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClienteTest {
 
     @Test
-    void deberiaDetectarClienteMayorDeEdad() {
+    void detectarClienteMayorDeEdadTest() {
         Cliente cliente = Cliente.crearCompleto(
             Dni.of("11111111A"),
             "Juan",
@@ -26,7 +26,7 @@ class ClienteTest {
     }
 
     @Test
-    void deberiaSumarCorrectamenteElTotalDeLasCuentas() {
+    void sumarTotalDeLasCuentasTest() {
         CuentaBancaria c1 = CuentaBancaria.crear(1000, "11111111A", "NORMAL");
         CuentaBancaria c2 = CuentaBancaria.crear(500, "11111111A", "PREMIUM");
 

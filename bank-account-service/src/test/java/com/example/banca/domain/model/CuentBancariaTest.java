@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CuentaBancariaTest {
 
     @Test
-    void deberiaCrearCuentaCorrectamente() {
+    void crearCuentaTest() {
         CuentaBancaria cuenta = CuentaBancaria.crear(
             1000.0,
             "11111111A",
@@ -23,7 +23,7 @@ class CuentaBancariaTest {
     }
 
     @Test
-    void actualizarTotalDebeCrearNuevaInstancia() {
+    void actualizarTotalConNuevaInstanciaTest() {
         CuentaBancaria original = CuentaBancaria.crear(
             1000.0,
             "11111111A",

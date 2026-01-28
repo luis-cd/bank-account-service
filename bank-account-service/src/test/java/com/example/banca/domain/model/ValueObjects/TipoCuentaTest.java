@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class TipoCuentaTest {
 
     @Test
-    void deberiaCrearTipoCuentaDesdeString() {
+    void crearTipoCuentaStringTest() {
         TipoCuenta tipo = TipoCuenta.fromString("premium");
 
         assertEquals(TipoCuenta.PREMIUM, tipo);
     }
 
     @Test
-    void deberiaFallarConTipoInvalido() {
+    void tipoInvalidoTest() {
         assertThrows(
             IllegalArgumentException.class,
             () -> TipoCuenta.fromString("VIP_SUPREMO")
@@ -22,7 +22,7 @@ class TipoCuentaTest {
     }
 
     @Test
-    void deberiaFallarConNull() {
+    void tipoCuentaNullTest() {
         assertThrows(
             IllegalArgumentException.class,
             () -> TipoCuenta.fromString(null)

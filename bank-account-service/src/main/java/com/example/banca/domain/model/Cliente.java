@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,22 +32,14 @@ public class Cliente {
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.fechaNacimiento = fechaNacimiento;
-        this.cuentas = cuentas == null ? List.of() : List.copyOf(cuentas);
+        // Ahora la lista es mutable
+        this.cuentas = cuentas != null ? new ArrayList<>(cuentas) : new ArrayList<>();
     }
 
-    /** Cliente creado automáticamente al dar de alta una cuenta */
     public static Cliente crearParcial(Dni dni) {
-        return new Cliente(
-            dni,
-            null,
-            null,
-            null,
-            null,
-            List.of()
-        );
+        return new Cliente(dni, null, null, null, null, new ArrayList<>());
     }
 
-    /** Cliente con datos completos */
     public static Cliente crearCompleto(
         Dni dni,
         String nombre,
@@ -59,14 +52,7 @@ public class Cliente {
         Objects.requireNonNull(apellido1, "apellido1 no puede ser null");
         Objects.requireNonNull(fechaNacimiento, "fechaNacimiento no puede ser null");
 
-        return new Cliente(
-            dni,
-            nombre,
-            apellido1,
-            apellido2,
-            fechaNacimiento,
-            cuentas
-        );
+        return new Cliente(dni, nombre, apellido1, apellido2, fechaNacimiento, cuentas);
     }
 
     public boolean estaCompleto() {
@@ -82,5 +68,11 @@ public class Cliente {
         return cuentas.stream()
             .mapToDouble(CuentaBancaria::getTotal)
             .sum();
+    }
+
+    public void agregarCuenta(CuentaBancaria cuenta) {
+        if (cuenta != null) {
+            cuentas.add(cuenta);
+        }
     }
 }

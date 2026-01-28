@@ -1,8 +1,5 @@
 package com.example.banca.infrastructure.persistence.repositories;
 
-import com.example.banca.infrastructure.persistence.jpaentities.ClienteEntity;
-import com.example.banca.infrastructure.persistence.jpaentities.CuentaBancariaEntity;
-
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.example.banca.domain.ports.out.ClienteRepositoryPort;
+import com.example.banca.infrastructure.persistence.jpaentities.ClienteEntity;
+import com.example.banca.infrastructure.persistence.jpaentities.CuentaBancariaEntity;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<ClienteEntity, String> {

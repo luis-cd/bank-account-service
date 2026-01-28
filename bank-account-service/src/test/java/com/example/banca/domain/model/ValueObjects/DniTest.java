@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class DniTest {
 
     @Test
-    void deberiaCrearDniValidoYNormalizado() {
+    void crearDniValidadoNormalizadoTest() {
         Dni dni = Dni.of(" 11111111a ");
 
         assertEquals("11111111A", dni.getValor());
     }
 
     @Test
-    void deberiaFallarConFormatoInvalido() {
+    void formatoInvalidoTest() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> Dni.of("ABC")
@@ -22,7 +22,7 @@ class DniTest {
     }
 
     @Test
-    void dosDnisConMismoValorSonIguales() {
+    void dosDnisConMismoValorTest() {
         Dni dni1 = Dni.of("11111111A");
         Dni dni2 = Dni.of("11111111a");
 

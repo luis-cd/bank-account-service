@@ -8,6 +8,8 @@ import com.example.banca.domain.model.ValueObjects.Dni;
 
 public interface CuentaRepositoryPort {
     Optional<CuentaBancaria> findById(Long id);
-    List<CuentaBancaria> findByClienteDni(Dni dni);
+    List<CuentaBancaria> findByDni(Dni dni);
     CuentaBancaria save(CuentaBancaria cuenta);
+
+    void actualizarSaldo(Long id, double nuevoTotal);
 }
