@@ -51,6 +51,22 @@ mvnw.cmd spring-boot:run
 ```
 ---
 
+### Ejecución con Docker
+
+El proyecto incluye un Dockerfile que permite dockerizarlo y ejecutar en un entorno probado con las dependencias necesarias.
+Para hacer el build y ejecutar se pueden usar los comandos:
+
+```
+docker build -t bank-account-service .
+```
+
+```
+docker run -p 8080:8080 bank-account-service
+```
+
+> ⚠ Nota: En la fase de build se ejecutan los tests
+---
+
 ### Cómo ejecutar los tests
 
 El proyecto incluye **tests unitarios y de integración** para cada capa. Se pueden ejecutar de varias formas:
